@@ -49,11 +49,14 @@ public class ReaderContentProvider extends ContentProvider {
             case ENTRIES:
                 tableName = FeedsTable.TABLE_NAME;
                 break;
+            case ENTRIES_ID:
             default:
                 throw new UnsupportedOperationException("Not yet implemented");
         }
         long result = helper.getWritableDatabase().insert(tableName, null, values);
-        return Uri.withAppendedPath(uri, String.valueOf(result));
+        Uri uri1 = Uri.withAppendedPath(uri, String.valueOf(result));
+        getContext().getContentResolver().notifyChange(uri, null);
+        return uri1;
     }
 
     @Override
