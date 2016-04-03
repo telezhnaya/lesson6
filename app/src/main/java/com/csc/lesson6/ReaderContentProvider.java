@@ -1,12 +1,14 @@
 package com.csc.lesson6;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 public class ReaderContentProvider extends ContentProvider {
     public static final String AUTHORITY = "com.csc.lesson6";
@@ -29,20 +31,20 @@ public class ReaderContentProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         // Implement this to handle requests to delete one or more rows.
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
-    public String getType(Uri uri) {
+    public String getType(@NonNull Uri uri) {
         // TODO: Implement this to handle requests for the MIME type of the data
         // at the given URI.
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
         int match = uriMatcher.match(uri);
         String tableName;
         switch (match) {
@@ -53,10 +55,10 @@ public class ReaderContentProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Not yet implemented");
         }
-        long result = helper.getWritableDatabase().insert(tableName, null, values);
-        Uri uri1 = Uri.withAppendedPath(uri, String.valueOf(result));
-        getContext().getContentResolver().notifyChange(uri, null);
-        return uri1;
+        long rowId = helper.getWritableDatabase().insert(tableName, null, values);
+        Uri inserted = ContentUris.withAppendedId(uri, rowId);
+        getContext().getContentResolver().notifyChange(inserted, null);
+        return inserted;
     }
 
     @Override
@@ -66,7 +68,7 @@ public class ReaderContentProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection,
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
         int match = uriMatcher.match(uri);
         SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
@@ -84,7 +86,7 @@ public class ReaderContentProvider extends ContentProvider {
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection,
+    public int update(@NonNull Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
         // TODO: Implement this to handle requests to update one or more rows.
         throw new UnsupportedOperationException("Not yet implemented");
