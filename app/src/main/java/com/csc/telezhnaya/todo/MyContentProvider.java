@@ -1,4 +1,4 @@
-package com.csc.lesson6;
+package com.csc.telezhnaya.todo;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -10,24 +10,25 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-public class ReaderContentProvider extends ContentProvider {
-    public static final String AUTHORITY = "com.csc.lesson6";
+public class MyContentProvider extends ContentProvider {
+    public static final String AUTHORITY = "com.csc.telezhnaya.todo";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+    public static final Uri ENTRIES_URI = Uri.withAppendedPath(MyContentProvider.CONTENT_URI, "entries");
 
-    public static final int ENTRIES = 1;
-    public static final int ENTRIES_ID = 2;
+    public static final int ENTRY_LIST = 1;
+    public static final int ENTRY = 2;
 
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
-        uriMatcher.addURI(AUTHORITY, "/entries", ENTRIES);
-        uriMatcher.addURI(AUTHORITY, "/entries/#", ENTRIES_ID);
+        uriMatcher.addURI(AUTHORITY, "/entries", ENTRY_LIST);
+        uriMatcher.addURI(AUTHORITY, "/entries/#", ENTRY);
     }
 
-    private ReaderOpenHelper helper;
+    private MyOpenHelper helper;
 
-    public ReaderContentProvider() {
-        helper = new ReaderOpenHelper(getContext());
+    public MyContentProvider() {
+        helper = new MyOpenHelper(getContext());
     }
 
     @Override
@@ -45,40 +46,31 @@ public class ReaderContentProvider extends ContentProvider {
 
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
-        int match = uriMatcher.match(uri);
-        String tableName;
-        switch (match) {
-            case ENTRIES:
-                tableName = FeedsTable.TABLE_NAME;
-                break;
-            case ENTRIES_ID:
-            default:
-                throw new UnsupportedOperationException("Not yet implemented");
+        if (uriMatcher.match(uri) != ENTRY_LIST) {
+            throw new UnsupportedOperationException("Not yet implemented");
         }
-        long rowId = helper.getWritableDatabase().insert(tableName, null, values);
-        Uri inserted = ContentUris.withAppendedId(uri, rowId);
-        getContext().getContentResolver().notifyChange(inserted, null);
-        return inserted;
+
+        long id = helper.getWritableDatabase().insert(TaskTable.TABLE_NAME, null, values);
+        // getContext().getContentResolver().notifyChange(inserted, null);
+        return ContentUris.withAppendedId(uri, id);
     }
 
     @Override
     public boolean onCreate() {
-        helper = new ReaderOpenHelper(getContext());
+        helper = new MyOpenHelper(getContext());
         return true;
     }
 
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
-        int match = uriMatcher.match(uri);
-        SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
-        switch (match) {
-            case ENTRIES:
-                builder.setTables(FeedsTable.TABLE_NAME);
-                break;
-            default:
-                throw new UnsupportedOperationException("Not yet implemented");
+        if (uriMatcher.match(uri) != ENTRY_LIST) {
+            throw new UnsupportedOperationException("Not yet implemented");
         }
+
+        SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+        builder.setTables(TaskTable.TABLE_NAME);
+
         SQLiteDatabase db = helper.getReadableDatabase();
         Cursor cursor = builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
@@ -88,7 +80,12 @@ public class ReaderContentProvider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
-        // TODO: Implement this to handle requests to update one or more rows.
-        throw new UnsupportedOperationException("Not yet implemented");
+        if (uriMatcher.match(uri) != ENTRY) {
+            throw new UnsupportedOperationException("Not yet implemented");
+        }
+
+        int rowId = helper.getWritableDatabase().update(TaskTable.TABLE_NAME, values, selection, selectionArgs);
+        //getContext().getContentResolver().notifyChange(uri, null);
+        return rowId;
     }
 }

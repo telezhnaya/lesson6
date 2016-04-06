@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.csc.lesson6">
+    package="com.csc.telezhnaya.todo">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -19,10 +19,10 @@
         </activity>
 
         <provider
-            android:name=".ReaderContentProvider"
-            android:authorities="com.csc.lesson6"
+            android:name=".MyContentProvider"
+            android:authorities="com.csc.telezhnaya.todo"
             android:enabled="true"
-            android:exported="true"></provider>
+            android:exported="true" />
     </application>
 
 </manifest>
