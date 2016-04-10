@@ -14,7 +14,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/new_task_hint" />
+            android:hint="@string/task_hint"
+            android:inputType="textAutoCorrect" />
 
         <Button
             android:id="@+id/add_task"

@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">lesson6</string>
-    <string name="new_task_hint">Write here</string>
+    <string name="app_name">ToDoManager</string>
+    <string name="task_hint">Write here</string>
     <string name="add">Add</string>
-    <string name="return_to_list">Return without saving</string>
-    <string name="edit">Mark as done</string>
     <string name="ok">Save all and return</string>
+    <string name="cancel">Return without saving</string>
+    <string name="make_done">Mark as done</string>
     <string name="write_smth">Please fill in your task</string>
 </resources>

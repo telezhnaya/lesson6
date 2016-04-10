@@ -4,6 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
+    <RatingBar
+        android:id="@+id/star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="1"
+        android:stepSize="1" />
+
     <TextView
         android:id="@+id/task"
         android:layout_width="0dp"
@@ -15,6 +22,6 @@
         android:id="@+id/task_done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="onChecked"/>
+        android:onClick="onTaskChanged" />
 
 </LinearLayout>

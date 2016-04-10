@@ -51,8 +51,9 @@ public class MyContentProvider extends ContentProvider {
         }
 
         long id = helper.getWritableDatabase().insert(TaskTable.TABLE_NAME, null, values);
-        // getContext().getContentResolver().notifyChange(inserted, null);
-        return ContentUris.withAppendedId(uri, id);
+        Uri inserted = ContentUris.withAppendedId(uri, id);
+        getContext().getContentResolver().notifyChange(inserted, null);
+        return inserted;
     }
 
     @Override
@@ -85,7 +86,7 @@ public class MyContentProvider extends ContentProvider {
         }
 
         int rowId = helper.getWritableDatabase().update(TaskTable.TABLE_NAME, values, selection, selectionArgs);
-        //getContext().getContentResolver().notifyChange(uri, null);
+        getContext().getContentResolver().notifyChange(uri, null);
         return rowId;
     }
 }

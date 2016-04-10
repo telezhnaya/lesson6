@@ -8,4 +8,5 @@ interface TaskTable extends BaseColumns {
     String COLUMN_TEXT = "task_text";
     String COLUMN_DATE = "date";
     String COLUMN_STATUS = "status";
+    String COLUMN_STARRED = "starred";
 }
