@@ -1,17 +1,11 @@
 package com.csc.telezhnaya.todo;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RatingBar;
@@ -20,9 +14,6 @@ import android.widget.Toast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-
-import static com.csc.telezhnaya.todo.MyContentProvider.ENTRIES_URI;
-import static com.csc.telezhnaya.todo.TaskTable.*;
 
 public class MainActivity extends AppCompatActivity {
     private final TaskManager manager = TaskManager.INSTANCE;
@@ -37,37 +28,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_main);
         ButterKnife.bind(this);
-
-        CursorAdapter adapter = new CursorAdapter(this, managedQuery(ENTRIES_URI, null, null, null, TaskManager.DB_ORDER), true) {
-            @Override
-            public View newView(Context context, Cursor cursor, ViewGroup parent) {
-                return LayoutInflater.from(parent.getContext()).inflate(R.layout.task, parent, false);
-            }
-
-            @Override
-            public void bindView(View view, Context context, Cursor cursor) {
-                TextView textView = (TextView) view.findViewById(R.id.task);
-                CheckBox checkBox = (CheckBox) view.findViewById(R.id.task_done);
-                RatingBar star = (RatingBar) view.findViewById(R.id.star);
-
-                textView.setText(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TEXT)));
-                boolean done = cursor.getInt(cursor.getColumnIndex(COLUMN_STATUS)) == 1;
-                checkBox.setChecked(done);
-                star.setRating(cursor.getInt(cursor.getColumnIndex(COLUMN_STARRED)));
-                int id = cursor.getInt(cursor.getColumnIndexOrThrow(TaskTable._ID));
-                view.setTag(id);
-
-                if (done) {
-                    textView.setPaintFlags(textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                } else {
-                    textView.setPaintFlags(textView.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
-                }
-            }
-        };
-
-        listView.setAdapter(adapter);
-
         manager.bind(this);
+        listView.setAdapter(manager.getAdapter());
+        getSupportLoaderManager().initLoader(0, null, manager);
     }
 
     @Override
