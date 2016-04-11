@@ -8,9 +8,9 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -51,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
         View parent = (View) view.getParent();
         TextView textView = (TextView) parent.findViewById(R.id.task);
         CheckBox checkBox = (CheckBox) parent.findViewById(R.id.task_done);
-        RatingBar star = (RatingBar) parent.findViewById(R.id.star);
-        manager.updateTask((int) parent.getTag(), textView.getText().toString(), checkBox.isChecked(), star.getRating() > 0);
+        ToggleButton star = (ToggleButton) parent.findViewById(R.id.star);
+        manager.updateTask((int) parent.getTag(), textView.getText().toString(), checkBox.isChecked(), star.isChecked());
     }
 
     public void onTextClick(View view) {
@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         final int position = (int) parent.getTag();
         TextView textView = (TextView) parent.findViewById(R.id.task);
         CheckBox checkBox = (CheckBox) parent.findViewById(R.id.task_done);
+        ToggleButton toggleButton = (ToggleButton) parent.findViewById(R.id.star);
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         final View dialogView = this.getLayoutInflater().inflate(R.layout.edit_task, null);
@@ -68,18 +69,20 @@ public class MainActivity extends AppCompatActivity {
         editText.setText(textView.getText().toString());
         CheckBox done = (CheckBox) dialogView.findViewById(R.id.task_done);
         done.setChecked(checkBox.isChecked());
+        ToggleButton star = (ToggleButton) dialogView.findViewById(R.id.star);
+        star.setChecked(toggleButton.isChecked());
 
         dialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 EditText editText = (EditText) dialogView.findViewById(R.id.edit_task);
                 CheckBox done = (CheckBox) dialogView.findViewById(R.id.task_done);
-                RatingBar star = (RatingBar) dialogView.findViewById(R.id.star);
+                ToggleButton star = (ToggleButton) dialogView.findViewById(R.id.star);
 
                 String newText = editText.getText().toString();
                 if (newText.isEmpty()) {
                     Toast.makeText(getApplicationContext(), R.string.write_smth, Toast.LENGTH_SHORT).show();
                 } else {
-                    manager.updateTask(position, newText, done.isChecked(), star.getRating() > 0);
+                    manager.updateTask(position, newText, done.isChecked(), star.isChecked());
                 }
             }
         });
@@ -91,4 +94,5 @@ public class MainActivity extends AppCompatActivity {
 
         dialogBuilder.create().show();
     }
+
 }

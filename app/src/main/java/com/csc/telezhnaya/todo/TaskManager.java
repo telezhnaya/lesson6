@@ -14,8 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CursorAdapter;
-import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import java.util.Date;
 
@@ -45,12 +45,12 @@ public class TaskManager implements LoaderManager.LoaderCallbacks<Cursor> {
             public void bindView(View view, Context context, Cursor cursor) {
                 TextView textView = (TextView) view.findViewById(R.id.task);
                 CheckBox checkBox = (CheckBox) view.findViewById(R.id.task_done);
-                RatingBar star = (RatingBar) view.findViewById(R.id.star);
+                ToggleButton star = (ToggleButton) view.findViewById(R.id.star);
 
                 textView.setText(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TEXT)));
                 boolean done = cursor.getInt(cursor.getColumnIndex(COLUMN_STATUS)) == 1;
                 checkBox.setChecked(done);
-                star.setRating(cursor.getInt(cursor.getColumnIndex(COLUMN_STARRED)));
+                star.setChecked(cursor.getInt(cursor.getColumnIndex(COLUMN_STARRED)) == 1);
                 int id = cursor.getInt(cursor.getColumnIndexOrThrow(TaskTable._ID));
                 view.setTag(id);
 

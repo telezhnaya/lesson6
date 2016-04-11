@@ -4,12 +4,14 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <RatingBar
+    <ToggleButton
         android:id="@+id/star"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:numStars="1"
-        android:stepSize="1" />
+        android:layout_width="20sp"
+        android:layout_height="20sp"
+        android:background="@drawable/ic_toggle"
+        android:onClick="onTaskChanged"
+        android:textOff=""
+        android:textOn="" />
 
     <TextView
         android:id="@+id/task"
